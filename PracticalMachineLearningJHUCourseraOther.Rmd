@@ -69,7 +69,7 @@ decisionTree <- caret::train(formula = classe ~ roll_belt + pitch_belt + yaw_bel
                              + pitch_forearm
                              + yaw_forearm
                              + total_accel_forearm
-                             , data = training, method="rpart", na.action = na.pass) 
+                             , data = training, method="rpart", na.action = na.omit) 
 summary(dicisionTree)
 ```
 
