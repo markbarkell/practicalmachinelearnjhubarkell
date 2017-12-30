@@ -39,38 +39,21 @@ training <- read.csv(trainingFileName)
 
 ```{r decisionTree}
 library(caret)
-decisionTree <- caret::train(formula = classe ~ roll_belt + pitch_belt + yaw_belt + total_accel_belt + gyros_belt_x + gyros_belt_y + gyros_belt_z + accel_belt_x + accel_belt_y + accel_belt_z + magnet_belt_x + magnet_bel_y + magent_belt_z
-                             + roll_arm
-                             + pitch_arm
-                             + total_accel_arm
-                             + gyros_arm_y
-                             + gyros_arm_x
-                             + gyros_arm_z
-                             + accel_arm_y
-                             + accel_arm_x
-                             + accel_arm_z
-                             + magnet_arm_z
-                             + magnet_arm_y
-                             + magnet_arm_x
-                             + roll_dumbbell
-                             + pitch_dumbbell
-                             + yaw_dumbbell
-                             + total_accel_dumbbell
-                             + gyros_dumbbell_x
-                             + gyros_dumbbell_y
-                             + gyros_dumbbell_z
-                             + accel_dumbbell_x
-                             + accel_dumbbell_y 
-                             + accel_dumbbell_z
-                             + magnet_dumbbell_x 
-                             + magnet_dumbbell_y
-                             + magnet_dumbbell_z
-                             + roll_forearm
-                             + pitch_forearm
-                             + yaw_forearm
-                             + total_accel_forearm
-                             , data = training, method="rpart", na.action = na.omit) 
-summary(dicisionTree)
+nonNAIndecies <- which(lapply(colnames(training), function(n) { sum(is.na(training[,n]))}) == 0)
+nonNAIndeciesAndDoablePredictors <- append(nonNAIndecies, which(colnames(training) == "classe"))
+nonNAIndeciesAndDoablePredictors <- append(nonNAIndeciesAndDoablePredictors, which(colnames(training) == "user_name"))
+excludeFatFactors <- function(i) { 
+  if (class(training[,i]) == "factor" && length(levels(training[,i])) < 53) 
+  { i } 
+  else if (class(training[,i]) != "factor") 
+  { i } 
+}
+nonNAIndeciesAndDoablePredictors <- lapply(nonNAIndeciesAndDoablePredictors, excludeFatFactors)
+nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
+m <- caret::train(y = training$classe, x = training[,nonNAIndeciesAndDoablePredictors], method="rpart",
+                  preProcess = c("scale", "BoxCox",  "pca"),
+                  na.action = na.omit) 
+summary(m)
 ```
 
 
