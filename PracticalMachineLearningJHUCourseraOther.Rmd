@@ -39,6 +39,7 @@ training <- read.csv(trainingFileName)
 
 ```{r decisionTree}
 library(caret)
+library(earth)
 nonNAIndecies <- which(lapply(colnames(training), function(n) { sum(is.na(training[,n]))}) == 0)
 nonNAIndeciesAndDoablePredictors <- append(nonNAIndecies, which(colnames(training) == "classe"))
 nonNAIndeciesAndDoablePredictors <- append(nonNAIndeciesAndDoablePredictors, which(colnames(training) == "user_name"))
@@ -50,9 +51,9 @@ excludeFatFactors <- function(i) {
 }
 nonNAIndeciesAndDoablePredictors <- lapply(nonNAIndeciesAndDoablePredictors, excludeFatFactors)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
-m <- caret::train(y = training$classe, x = training[,nonNAIndeciesAndDoablePredictors], method="rpart",
+m <- caret::train(y = training$classe, x = training[,nonNAIndeciesAndDoablePredictors], method="bagEarth",
                   preProcess = c("scale", "BoxCox",  "pca"),
-                  na.action = na.omit) 
+                  na.action = na.fail) 
 summary(m)
 ```
 
