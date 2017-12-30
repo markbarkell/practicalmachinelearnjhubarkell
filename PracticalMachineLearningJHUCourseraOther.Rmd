@@ -50,7 +50,7 @@ excludeFatFactors <- function(i) {
 }
 nonNAIndeciesAndDoablePredictors <- lapply(nonNAIndeciesAndDoablePredictors, excludeFatFactors)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
-m <- caret::train(y = training$classe, x = training[,nonNAIndeciesAndDoablePredictors], method="rpart",
+m <- caret::train(y = training$classe, x = training[,nonNAIndeciesAndDoablePredictors], method="AdaBoost.M1",
                   preProcess = c("scale", "BoxCox",  "pca"),
                   na.action = na.omit) 
 summary(m)
