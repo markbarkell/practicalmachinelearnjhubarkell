@@ -42,8 +42,6 @@ set.seed(0x750ed0e7) # Used GNU/Linux command openssl rand -hex 4
 library(caret)
 classeIndex <- which(colnames(training) == "classe")
 nonNAIndecies <- which(lapply(colnames(training), function(n) { sum(is.na(training[,n]))}) == 0)
-nonNAIndeciesAndDoablePredictors <- append(nonNAIndecies, which(colnames(training) == "classe"))
-nonNAIndeciesAndDoablePredictors <- append(nonNAIndeciesAndDoablePredictors, which(colnames(training) == "user_name"))
 excludeFactors <- function(i) { 
   if (class(training[,i]) %in% c("double", "numeric", "integer")) 
   { i }
@@ -51,6 +49,11 @@ excludeFactors <- function(i) {
 ctrl <- trainControl(preProcOptions = list(thresh = .8))
 nonNAIndeciesAndDoablePredictors <-  lapply(nonNAIndeciesAndDoablePredictors, excludeFactors)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
+
+aCor <- abs(cor(training[,nonNAIndeciesAndDoablePredictors]))
+diag(aCor) <- 0
+which(aCor > .8, arr.ind=T )
+
 m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="mda",
                   trControl = ctrl,
                   preProcess = c("center", "scale", "pca"),
