@@ -48,7 +48,7 @@ excludeFactors <- function(i) {
   if (class(training[,i]) %in% c("double", "numeric", "integer")) 
   { i }
 }
-ctrl <- trainControl(preProcOptions = list(thresh = .95))
+ctrl <- trainControl(preProcOptions = list(thresh = .7))
 nonNAIndeciesAndDoablePredictors <-  lapply(nonNAIndeciesAndDoablePredictors, excludeFactors)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
