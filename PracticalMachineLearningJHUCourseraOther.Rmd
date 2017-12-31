@@ -39,19 +39,18 @@ training <- read.csv(trainingFileName)
 
 ```{r decisionTree}
 library(caret)
+classeIndex <- which(colnames(training) == "classe")
 nonNAIndecies <- which(lapply(colnames(training), function(n) { sum(is.na(training[,n]))}) == 0)
 nonNAIndeciesAndDoablePredictors <- append(nonNAIndecies, which(colnames(training) == "classe"))
 nonNAIndeciesAndDoablePredictors <- append(nonNAIndeciesAndDoablePredictors, which(colnames(training) == "user_name"))
-excludeFatFactors <- function(i) { 
-  if (class(training[,i]) == "factor" && length(levels(training[,i])) < 53) 
-  { i } 
-  else if (class(training[,i]) != "factor") 
-  { i } 
+excludeFactors <- function(i) { 
+  if (class(training[,i]) %in% c("double", "numeric", "integer")) 
+  { i }
 }
-nonNAIndeciesAndDoablePredictors <- lapply(nonNAIndeciesAndDoablePredictors, excludeFatFactors)
+nonNAIndeciesAndDoablePredictors <- lapply(nonNAIndeciesAndDoablePredictors, excludeFactors)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
-m <- caret::train(y = training$classe, x = training[,nonNAIndeciesAndDoablePredictors], method="rpart",
-                  preProcess = c("scale", "BoxCox",  "pca"),
+m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="LogitBoost",
+                
                   na.action = na.omit) 
 summary(m)
 ```
