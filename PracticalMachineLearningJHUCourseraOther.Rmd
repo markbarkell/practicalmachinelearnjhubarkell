@@ -48,11 +48,14 @@ excludeFactors <- function(i) {
   if (class(training[,i]) %in% c("double", "numeric", "integer")) 
   { i }
 }
-nonNAIndeciesAndDoablePredictors <- lapply(nonNAIndeciesAndDoablePredictors, excludeFactors)
+ctrl <- trainControl(preProcOptions = list(thresh = .9))
+nonNAIndeciesAndDoablePredictors <-  lapply(nonNAIndeciesAndDoablePredictors, excludeFactors)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="LogitBoost",
+                  trControl = ctrl,
                   preProcess = c("center", "scale", "pca"),
-                  na.action = na.omit) 
+                  na.action = na.omit
+                  ) 
 summary(m)
 ```
 
