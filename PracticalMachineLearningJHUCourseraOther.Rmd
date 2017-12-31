@@ -40,6 +40,7 @@ training <- read.csv(trainingFileName)
 ```{r decisionTree}
 set.seed(0x750ed0e7) # Used GNU/Linux command openssl rand -hex 4
 library(caret)
+training <- upSample(training, training$classe)
 classeIndex <- which(colnames(training) == "classe")
 nonNAIndecies <- which(lapply(colnames(training), function(n) { sum(is.na(training[,n]))}) == 0)
 excludeIndecies <- function(i) {
