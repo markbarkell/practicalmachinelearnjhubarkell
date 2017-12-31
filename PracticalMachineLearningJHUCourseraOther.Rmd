@@ -41,15 +41,21 @@ training <- read.csv(trainingFileName)
 set.seed(0x750ed0e7) # Used GNU/Linux command openssl rand -hex 4
 library(caret)
 training <- upSample(training, training$classe)
+training <- training[,-which(colnames(training) %in% c("Class"))]
 classeIndex <- which(colnames(training) == "classe")
+notToIncludeIndecies <- which(colnames(training) %in% c("raw_timestamp_part_1", "raw_timestamp_part_2", "classe"))
 nonNAIndecies <- which(lapply(colnames(training), function(n) { sum(is.na(training[,n]))}) == 0)
 excludeIndecies <- function(i) {
-  if (class(training[,i]) != "factor" && i != classeIndex)
+  if (i %in% notToIncludeIndecies)
+  {
+    
+  }
+  if (class(training[,i]) != "factor")
   {
     i
   }
 }
-ctrl <- trainControl(preProcOptions = list(thresh = .8))
+ctrl <- trainControl(preProcOptions = list(thresh = .85))
 nonNAIndeciesAndDoablePredictors <-  lapply(nonNAIndecies, excludeIndecies)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
