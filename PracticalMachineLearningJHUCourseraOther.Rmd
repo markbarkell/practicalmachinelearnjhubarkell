@@ -89,11 +89,30 @@ excludeIndecies <- function(i) {
           "gyros_belt_z",
           "magnet_forearm_x",
           "magnet_forearm_z",
-          "magnet_forearm_y"
+          "magnet_forearm_y",
+          "magnet_belt_x",
+          "magnet_belt_y",
+          "magnet_belt_z",
+          "roll_arm",
+          "pitch_arm",
+          "yaw_arm",
+          "gyros_arm_x",
+          "gyros_arm_y",
+          "gyros_arm_z",
+          "accel_arm_x",
+          "accel_arm_y",
+          "accel_arm_z",
+          "magnet_arm_y",
+          "magnet_arm_z",
+          "magnet_arm_x"
           ))
     {
       i
     }
+  }
+  else if (class(training[,i]) == "user_name")
+  {
+    
   }
   else if (class(training[,i]) == "factor" 
            && length(levels(training[,i])) < 53)
@@ -108,7 +127,7 @@ nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
                   trControl = ctrl,
-                  preProcess = c("center", "scale"),
+                  preProcess = c("center", "scale", "pca"),
                   na.action = na.fail
                   ) 
 summary(m)
