@@ -58,6 +58,9 @@ excludeIndecies <- function(i) {
     if (colnames(training)[i] 
         %in% 
         c(
+          "roll_belt",
+          "pitch_belt",
+          "yaw_belt",
           "gyros_arm_x", 
           "gyros_arm_y", 
           "gyros_arm_z",
@@ -72,12 +75,18 @@ excludeIndecies <- function(i) {
           "roll_dumbbell",
           "roll_forearm",
           "yaw_forearm",
+          "accel_belt_y",
+          "accel_belt_x",
+          "accel_belt_z",
           "accel_forearm_y",
           "accel_forearm_z",
           "accel_forearm_x",
           "gyros_forearm_y",
           "gyros_forearm_x",
           "gyros_forearm_z",
+          "gyros_belt_x",
+          "gyros_belt_y",
+          "gyros_belt_z",
           "magnet_forearm_x",
           "magnet_forearm_z",
           "magnet_forearm_y"
