@@ -1,0 +1,14 @@
+Running with rpart looks very boring.   It does not even predict an "E" or a "B" classe. 
+
+pt <- predict(m, training[,nonNAIndeciesAndDoablePredictors])
+> sum(pt == "A")
+[1] 3866
+> sum(pt == "B")
+[1] 0
+> sum(pt == "C")
+[1] 15621
+> sum(pt == "D")
+[1] 8413
+> sum(pt == "E")
+[1] 0
+>  
