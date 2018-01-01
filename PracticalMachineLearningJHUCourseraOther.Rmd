@@ -50,19 +50,19 @@ excludeIndecies <- function(i) {
   {
     
   }
-  if (class(training[,i]) != "factor")
+  else if (class(training[,i]) != "factor")
   {
     i
   }
 }
-ctrl <- trainControl(preProcOptions = list(thresh = .85))
+#ctrl <- trainControl(preProcOptions = list(thresh = .85))
 nonNAIndeciesAndDoablePredictors <-  lapply(nonNAIndecies, excludeIndecies)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 
 m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="mda",
-                  trControl = ctrl,
-                  preProcess = c("center", "scale", "pca"),
+                  #trControl = ctrl,
+                  preProcess = c("center", "scale"),
                   na.action = na.fail
                   ) 
 summary(m)
