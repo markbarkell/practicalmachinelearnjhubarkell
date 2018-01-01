@@ -55,21 +55,50 @@ excludeIndecies <- function(i) {
   }
   else if (class(training[,i]) != "factor")
   {
-    i
+    if (colnames(training)[i] 
+        %in% 
+        c(
+          "gyros_arm_x", 
+          "gyros_arm_y", 
+          "gyros_arm_z",
+          "accel_arm_x",
+          "accel_arm_y",
+          "accel_arm_z",
+          "skewness_yaw_arm",
+          "skewness_pitch_arm",
+          "skewness_roll_arm",
+          "pitch_dumbbell",
+          "yaw_dumbbell",
+          "roll_dumbbell",
+          "roll_forearm",
+          "yaw_forearm",
+          "accel_forearm_y",
+          "accel_forearm_z",
+          "accel_forearm_x",
+          "gyros_forearm_y",
+          "gyros_forearm_x",
+          "gyros_forearm_z",
+          "magnet_forearm_x",
+          "magnet_forearm_z",
+          "magnet_forearm_y"
+          ))
+    {
+      i
+    }
   }
   else if (class(training[,i]) == "factor" 
            && length(levels(training[,i])) < 53)
   {
-    
+      
   }
 }
-#ctrl <- trainControl(preProcOptions = list(thresh = .85))
+ctrl <- trainControl(preProcOptions = list(thresh = .95))
 nonNAIndeciesAndDoablePredictors <-  lapply(1:length(colnames(training)), excludeIndecies)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 
 m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="mda",
-                  #trControl = ctrl,
+                  trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
                   ) 
