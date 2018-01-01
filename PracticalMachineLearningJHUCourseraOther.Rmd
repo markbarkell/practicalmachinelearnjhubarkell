@@ -44,9 +44,12 @@ training <- upSample(training, training$classe)
 training <- training[,-which(colnames(training) %in% c("Class"))]
 classeIndex <- which(colnames(training) == "classe")
 notToIncludeIndecies <- which(colnames(training) %in% c("raw_timestamp_part_1", "raw_timestamp_part_2", "classe"))
-nonNAIndecies <- which(lapply(colnames(training), function(n) { sum(is.na(training[,n]))}) == 0)
 excludeIndecies <- function(i) {
   if (i %in% notToIncludeIndecies)
+  {
+    
+  }
+  else if (0 != sum(is.na(training[,i])))
   {
     
   }
@@ -54,9 +57,14 @@ excludeIndecies <- function(i) {
   {
     i
   }
+  else if (class(training[,i]) == "factor" 
+           && length(levels(training[,i])) < 53)
+  {
+    
+  }
 }
 #ctrl <- trainControl(preProcOptions = list(thresh = .85))
-nonNAIndeciesAndDoablePredictors <-  lapply(nonNAIndecies, excludeIndecies)
+nonNAIndeciesAndDoablePredictors <-  lapply(1:length(colnames(training)), excludeIndecies)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 
