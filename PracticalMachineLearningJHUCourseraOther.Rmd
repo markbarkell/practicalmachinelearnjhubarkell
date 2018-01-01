@@ -89,7 +89,7 @@ excludeIndecies <- function(i) {
   else if (class(training[,i]) == "factor" 
            && length(levels(training[,i])) < 53)
   {
-      
+     
   }
 }
 ctrl <- trainControl(preProcOptions = list(thresh = .95))
@@ -97,7 +97,7 @@ nonNAIndeciesAndDoablePredictors <-  lapply(1:length(colnames(training)), exclud
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 
-m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="mda",
+m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="rf",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
