@@ -97,7 +97,7 @@ nonNAIndeciesAndDoablePredictors <-  lapply(1:length(colnames(training)), exclud
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 
-m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="mda",
+m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
