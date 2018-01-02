@@ -125,12 +125,64 @@ nonNAIndeciesAndDoablePredictors <-  lapply(1:length(colnames(training)), exclud
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 
-m <- caret::train(y = training[,classeIndex], x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+mIsA <- caret::train(y = as.factor(training[,classeIndex] == "A"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
                   trControl = ctrl,
                   preProcess = c("center", "scale", "pca"),
                   na.action = na.fail
-                  ) 
-summary(m)
+                  )
+
+mIsB <- caret::train(y = as.factor(training[,classeIndex] == "B"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+                  trControl = ctrl,
+                  preProcess = c("center", "scale"),
+                  na.action = na.fail
+                  )
+
+
+mIsC <- caret::train(y = as.factor(training[,classeIndex] == "C"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+                  trControl = ctrl,
+                  preProcess = c("center", "scale"),
+                  na.action = na.fail
+                  )
+
+mIsD <- caret::train(y = as.factor(training[,classeIndex] == "D"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+                  trControl = ctrl,
+                  preProcess = c("center", "scale"),
+                  na.action = na.fail
+                  )
+
+
+
+mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+                  trControl = ctrl,
+                  preProcess = c("center", "scale"),
+                  na.action = na.fail
+                  )
+
+isPredict <- function(data) {
+  data$isA <- predict(mIsA, data)
+  data$isB <- predict(mIsB, data)
+  data$isC <- predict(mIsC, data)
+  data$isD <- predict(mIsD, data)
+  data$isE <- predict(mIsE, data)
+  data
+}
+
+training<-isPredict(training)
+
+append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE")))
+
+testing<-isPredict(testing)
+
+m <- caret::train(
+  y = training[,classeIndex], 
+  x = training[,nonNAIndeciesAndDoablePredictors],
+  method = "fda",
+  trControl = ctrl,
+  preProcess = c("center", "scale", "pca")
+                  )
+pt <- predict(m, training)
+p <- predict(m, testing)
+
 ```
 
 
