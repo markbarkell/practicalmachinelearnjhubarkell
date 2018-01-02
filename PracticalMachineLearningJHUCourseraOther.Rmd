@@ -58,9 +58,9 @@ excludeIndecies <- function(i) {
     if (colnames(training)[i] 
         %in% 
         c(
-          "roll_belt",
-          "pitch_belt",
-          "yaw_belt",
+       #   "roll_belt",
+      #    "pitch_belt",
+       #   "yaw_belt",
           "gyros_arm_x", 
           "gyros_arm_y", 
           "gyros_arm_z",
@@ -88,14 +88,11 @@ excludeIndecies <- function(i) {
           "gyros_belt_y",
           "gyros_belt_z",
           "magnet_forearm_x",
-          "magnet_forearm_z",
+         "magnet_forearm_z",
           "magnet_forearm_y",
           "magnet_belt_x",
           "magnet_belt_y",
           "magnet_belt_z",
-          "roll_arm",
-          "pitch_arm",
-          "yaw_arm",
           "gyros_arm_x",
           "gyros_arm_y",
           "gyros_arm_z",
@@ -104,7 +101,8 @@ excludeIndecies <- function(i) {
           "accel_arm_z",
           "magnet_arm_y",
           "magnet_arm_z",
-          "magnet_arm_x"
+          "magnet_arm_x",
+      ""
           ))
     {
       i
@@ -152,7 +150,7 @@ mIsD <- caret::train(y = as.factor(training[,classeIndex] == "D"), x = training[
 
 
 
-mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[,nonNAIndeciesAndDoablePredictors], method="rpart",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
@@ -176,7 +174,7 @@ testing<-isPredict(testing)
 m <- caret::train(
   y = training[,classeIndex], 
   x = training[,nonNAIndeciesAndDoablePredictors],
-  method = "fda",
+  method = "mda",
   trControl = ctrl,
   preProcess = c("center", "scale", "pca")
                   )
