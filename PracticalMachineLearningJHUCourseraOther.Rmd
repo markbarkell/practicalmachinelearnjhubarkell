@@ -125,26 +125,26 @@ nonNAIndeciesAndDoablePredictors <-  lapply(1:length(colnames(training)), exclud
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 
-mIsA <- caret::train(y = as.factor(training[,classeIndex] == "A"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+mIsA <- caret::train(y = as.factor(training[,classeIndex] == "A"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
                   trControl = ctrl,
                   preProcess = c("center", "scale", "pca"),
                   na.action = na.fail
                   )
 
-mIsB <- caret::train(y = as.factor(training[,classeIndex] == "B"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+mIsB <- caret::train(y = as.factor(training[,classeIndex] == "B"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
                   )
 
 
-mIsC <- caret::train(y = as.factor(training[,classeIndex] == "C"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+mIsC <- caret::train(y = as.factor(training[,classeIndex] == "C"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
                   )
 
-mIsD <- caret::train(y = as.factor(training[,classeIndex] == "D"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+mIsD <- caret::train(y = as.factor(training[,classeIndex] == "D"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
@@ -152,7 +152,7 @@ mIsD <- caret::train(y = as.factor(training[,classeIndex] == "D"), x = training[
 
 
 
-mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[,nonNAIndeciesAndDoablePredictors], method="fda",
+mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
