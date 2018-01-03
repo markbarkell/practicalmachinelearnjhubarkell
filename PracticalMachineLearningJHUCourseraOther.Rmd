@@ -156,39 +156,124 @@ mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[
                   na.action = na.fail
                   )
 
+mIsAB <- caret::train(y = as.factor(grepl("^[AB]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+mIsAC <- caret::train(y = as.factor(grepl("^[AC]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+mIsAD <- caret::train(y = as.factor(grepl("^[AD]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+mIsAE <- caret::train(y = as.factor(grepl("^[AE]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+
+
+mIsBC <- caret::train(y = as.factor(grepl("^[BC]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+mIsBD <- caret::train(y = as.factor(grepl("^[BD]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+mIsBE <- caret::train(y = as.factor(grepl("^[BE]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+
+mIsCD <- caret::train(y = as.factor(grepl("^[CD]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+mIsCE <- caret::train(y = as.factor(grepl("^[CE]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+mIsDE <- caret::train(y = as.factor(grepl("^[DE]$", as.character(training[,classeIndex]))), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
+                      trControl = ctrl,
+                      preProcess = c("center", "scale"),
+                      na.action = na.fail
+                      )
+
+
+
 putPredict <- function(data) {
   data$isA <- as.logical(predict(mIsA, data))
   data$isB <- as.logical(predict(mIsB, data))
   data$isC <- as.logical(predict(mIsC, data))
   data$isD <- as.logical(predict(mIsD, data))
   data$isE <- as.logical(predict(mIsE, data))
+  data$isAB <- as.logical(predict(mIsAB, data))
+  data$isAC <- as.logical(predict(mIsAC, data))
+  data$isAD <- as.logical(predict(mIsAD, data))
+  data$isAE <- as.logical(predict(mIsAE, data))
+  data$isBC <- as.logical(predict(mIsBC, data))
+  data$isBD <- as.logical(predict(mIsBD, data))
+  data$isBE <- as.logical(predict(mIsBE, data))
+  data$isCD <- as.logical(predict(mIsCD, data))
+  data$isCE <- as.logical(predict(mIsCE, data))
+  data$isDE <- as.logical(predict(mIsDE, data))
   data
 }
 
 training <- putPredict(training)
 
-append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE")))
+#append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE", "isAB", "isAC", "isAD", "isAE", "isBC", "isBD", "isBE", "isCD", "isCE", "isDE")))
 
 testing <- putPredict(testing)
 
 m <- caret::train(
   y = training[,classeIndex], 
   x = training[,nonNAIndeciesAndDoablePredictors],
-  method = "bagFDAGCV",
+  method = "fda",
   trControl = ctrl,
   preProcess = c("center", "scale", "pca")
                   )
 
 customPredict <- function(model, data, allowFieldIndexes)
 {
-  s <- mapply(function(isA, isB, isC, isD, isE) {
+  s <- mapply(function(isA, isB, isC, isD, isE, isAB, isAC, isAD, isAE, isBC, isBD, isBE, isCD, isCE, isDE) {
+    aSum = isAB + isAC + isAD + isAE
+    bSum = isAB + isBC + isBD + isBE
+    cSum = isAC + isBC + isCD + isCE
+    dSum = isAD + isBD + isCD + isDE
+    eSum = isAE + isBE + isCE + isDE
     as.character(if (isA && !isB && !isC && !isD && !isE) { "A" }
     else if (!isA && isB && !isC && !isD && !isE) { "B" }
     else if (!isA && !isB && isC &&  isD && !isE) { "C" }
     else if (!isA && !isB && !isC && isD && !isE) { "D" }
     else if (!isA && !isB && !isC && !isD && isE) { "E" }
+    else if (aSum > max(bSum, cSum, dSum, eSum)) { "A" }
+    else if (bSum > max(aSum, cSUm, dSum, eSum)) { "B" }
+    else if (cSum > max(aSum, bSum, dSum, eSum)) { "C" }
+    else if (dSum > max(aSum, bSum, cSum, eSum)) { "D" }
+    else if (eSum > max(aSum, bSum, cSum, dSum)) { "E"}
     else { "F" })
-  }, data$isA, data$isB, data$isC, data$isD, data$isE)
+  }, data$isA, data$isB, data$isC, data$isD, data$isE, data$isAB, data$isAC, data$isAD, data$isAE, data$isBC, data$isBD, data$isBE, data$isCD, data$CE, data$DE)
   p <- predict(model, data[,allowFieldIndexes])
   
   s[which(s == "F")] <- as.character(p[which(s == "F")])
@@ -198,6 +283,8 @@ customPredict <- function(model, data, allowFieldIndexes)
 pt <- customPredict(model = m, data = training, allowFieldIndexes = nonNAIndeciesAndDoablePredictors)
 p <- customPredict(model = m, data = testing, allowFieldIndexes = nonNAIndeciesAndDoablePredictors)
 
+pt2 <- predict(m, training[,nonNAIndeciesAndDoablePredictors])
+p2 <- predict(m, testing[,nonNAIndeciesAndDoablePredictors])
 
 
 ```
