@@ -118,7 +118,7 @@ excludeIndecies <- function(i) {
       
   }
 }
-ctrl <- trainControl(preProcOptions = list(thresh = .95))
+ctrl <- caret::trainControl(preProcOptions = list(thresh = .95))
 nonNAIndeciesAndDoablePredictors <-  lapply(1:length(colnames(training)), excludeIndecies)
 nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
@@ -150,26 +150,26 @@ mIsD <- caret::train(y = as.factor(training[,classeIndex] == "D"), x = training[
 
 
 
-mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[,nonNAIndeciesAndDoablePredictors], method="rpart",
+mIsE <- caret::train(y = as.factor(training[,classeIndex] == "E"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
                   trControl = ctrl,
                   preProcess = c("center", "scale"),
                   na.action = na.fail
                   )
 
-isPredict <- function(data) {
-  data$isA <- predict(mIsA, data)
-  data$isB <- predict(mIsB, data)
-  data$isC <- predict(mIsC, data)
-  data$isD <- predict(mIsD, data)
-  data$isE <- predict(mIsE, data)
+putPredict <- function(data) {
+  data$isA <- as.logical(predict(mIsA, data))
+  data$isB <- as.logical(predict(mIsB, data))
+  data$isC <- as.logical(predict(mIsC, data))
+  data$isD <- as.logical(predict(mIsD, data))
+  data$isE <- as.logical(predict(mIsE, data))
   data
 }
 
-training<-isPredict(training)
+training <- putPredict(training)
 
 append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE")))
 
-testing<-isPredict(testing)
+testing <- putPredict(testing)
 
 m <- caret::train(
   y = training[,classeIndex], 
@@ -178,8 +178,25 @@ m <- caret::train(
   trControl = ctrl,
   preProcess = c("center", "scale", "pca")
                   )
-pt <- predict(m, training)
-p <- predict(m, testing)
+
+customPredict <- function(model, data, allowFieldIndexes)
+{
+  s <- mapply(function(isA, isB, isC, isD, isE) {
+    as.character(if (isA && !isB && !isC && !isD && !isE) { "A" }
+    else if (!isA && isB && !isC && !isD && !isE) { "B" }
+    else if (!isA && !isB && isC &&  isD && !isE) { "C" }
+    else if (!isA && !isB && !isC && isD && !isE) { "D" }
+    else if (!isA && !isB && !isC && !isD && isE) { "E" }
+    else { "F" })
+  }, data$isA, data$isB, data$isC, data$isD, data$isE)
+  p <- predict(model, data[,allowFieldIndexes])
+  
+  s[which(s == "F")] <- as.character(p[which(s == "F")])
+  s
+}
+
+pt <- customPredict(model = m, data = training, allowFieldIndexes = nonNAIndeciesAndDoablePredictors)
+p <- customPredict(model = m, data = testing, allowFieldIndexes = nonNAIndeciesAndDoablePredictors)
 
 ```
 
