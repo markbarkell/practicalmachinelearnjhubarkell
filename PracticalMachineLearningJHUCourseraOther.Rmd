@@ -167,7 +167,7 @@ putPredict <- function(data) {
 
 training <- putPredict(training)
 
-#append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE")))
+append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE")))
 
 testing <- putPredict(testing)
 
