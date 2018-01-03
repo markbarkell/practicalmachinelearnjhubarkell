@@ -268,12 +268,12 @@ customPredict <- function(model, data, allowFieldIndexes)
     else if (!isA && !isB && !isC && isD && !isE) { "D" }
     else if (!isA && !isB && !isC && !isD && isE) { "E" }
     else if (aSum > max(bSum, cSum, dSum, eSum)) { "A" }
-    else if (bSum > max(aSum, cSUm, dSum, eSum)) { "B" }
+    else if (bSum > max(aSum, cSum, dSum, eSum)) { "B" }
     else if (cSum > max(aSum, bSum, dSum, eSum)) { "C" }
     else if (dSum > max(aSum, bSum, cSum, eSum)) { "D" }
     else if (eSum > max(aSum, bSum, cSum, dSum)) { "E"}
     else { "F" })
-  }, data$isA, data$isB, data$isC, data$isD, data$isE, data$isAB, data$isAC, data$isAD, data$isAE, data$isBC, data$isBD, data$isBE, data$isCD, data$CE, data$DE)
+  }, data$isA, data$isB, data$isC, data$isD, data$isE, data$isAB, data$isAC, data$isAD, data$isAE, data$isBC, data$isBD, data$isBE, data$isCD, data$isCE, data$isDE)
   p <- predict(model, data[,allowFieldIndexes])
   
   s[which(s == "F")] <- as.character(p[which(s == "F")])
