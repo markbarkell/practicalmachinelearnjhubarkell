@@ -58,9 +58,9 @@ excludeIndecies <- function(i) {
     if (colnames(training)[i] 
         %in% 
         c(
-       #   "roll_belt",
-      #    "pitch_belt",
-       #   "yaw_belt",
+#          "roll_belt",
+#          "pitch_belt",
+#          "yaw_belt",
           "gyros_arm_x", 
           "gyros_arm_y", 
           "gyros_arm_z",
@@ -125,7 +125,7 @@ nonNAIndeciesAndDoablePredictors <- unlist(nonNAIndeciesAndDoablePredictors)
 
 mIsA <- caret::train(y = as.factor(training[,classeIndex] == "A"), x = training[,nonNAIndeciesAndDoablePredictors], method="glm",
                   trControl = ctrl,
-                  preProcess = c("center", "scale", "pca"),
+                  preProcess = c("center", "scale"),
                   na.action = na.fail
                   )
 
@@ -174,7 +174,7 @@ testing <- putPredict(testing)
 m <- caret::train(
   y = training[,classeIndex], 
   x = training[,nonNAIndeciesAndDoablePredictors],
-  method = "fda",
+  method = "bagFDAGCV",
   trControl = ctrl,
   preProcess = c("center", "scale", "pca")
                   )
