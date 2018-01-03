@@ -167,14 +167,14 @@ putPredict <- function(data) {
 
 training <- putPredict(training)
 
-append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE")))
+#append(nonNAIndeciesAndDoablePredictors, which(colnames(training) %in% c("isA", "isB", "isC", "isD", "isE")))
 
 testing <- putPredict(testing)
 
 m <- caret::train(
   y = training[,classeIndex], 
   x = training[,nonNAIndeciesAndDoablePredictors],
-  method = "mda",
+  method = "fda",
   trControl = ctrl,
   preProcess = c("center", "scale", "pca")
                   )
@@ -197,6 +197,8 @@ customPredict <- function(model, data, allowFieldIndexes)
 
 pt <- customPredict(model = m, data = training, allowFieldIndexes = nonNAIndeciesAndDoablePredictors)
 p <- customPredict(model = m, data = testing, allowFieldIndexes = nonNAIndeciesAndDoablePredictors)
+
+
 
 ```
 
