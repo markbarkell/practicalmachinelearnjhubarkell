@@ -20,8 +20,9 @@ The *classe* variable has five distinct enumerations:
 > Six young health participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E).
 -- The data description web page.
 
+## Downloading of the data
 
-```{r download, echo=FALSE}
+```{r download}
 trainingFileName <- "pml-training.csv"
 testingFileName <- "pml-testing.csv"
 trainingUri <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
@@ -36,6 +37,32 @@ testing <- read.csv(testingFileName)
 training <- read.csv(trainingFileName)
 
 ```
+
+
+
+## Data Modeling
+
+The exploration of the data has been done with the code seen here.  The path to reach the current state of the code was to look at which possible predictors did not have N/A's, which predictors were not factors, and which predictors did not identify the user or a particular time encoding.
+
+The determination of which predictors to use was done manually by visual inspection and by looking at the results of r statements such as
+
+```{r understandingcolumns}
+#lapply(colnames(training), function(x) { if (0 == sum(is.na(training[,x]))) { x }})
+```
+
+
+The excludeIndecies R function is used to say which columns could be used as predictors.  
+
+Having done sums to determine whether the data was balenced I noticed many more "A" instances of **classe** than the other values.  So, I used upSample to make the impressions seem of equal factor level occurrences.
+
+The reason I commented out roll\_belt, pitch\_belt, and yaw\_belt is their high correlation with many other predictors.  Including them as predictors degraded predictions in many of the development runs I did.
+
+I performed many different models and am demostrating two of them in this decisionTree code.   After not getting enough correct with fda, mda, bagFDA, bagFDAGcv, as the types for the m model variable, I saw that treebag worked very well.  On the prediction test 18 of 20 are correct when predicting off of just tree bag.  The other model which is shown with pt and p variables are results, has 16 of 20 correct.  Both of these would have been sufficient to pass the Coursera JHU Practical Machine Learning Prediction Assignment.   The most of the code seen here is to do the blended glm/treebag model which yielded 16 of 20 correct.  (The reason I know how many correct there are on both is that I learned by having so many failing models what the real answers were.)
+
+The values of p and p2 are not printed in order to not show passing anwsers to the assignment on the Open Web.   The modeling in this file takes over 5.5 GB of RAM to Run using Microsoft R-Open 3.4.0.  So, if anyone attmepts to run this, please note, it will fail on most home computers.
+
+Throughout the assignment I did not graph the data.
+
 
 ```{r decisionTree}
 set.seed(0x750ed0e7) # Used GNU/Linux command openssl rand -hex 4
@@ -254,6 +281,7 @@ m <- caret::train(
   preProcess = c("center", "scale", "pca")
                   )
 
+
 customPredict <- function(model, data, allowFieldIndexes)
 {
   s <- mapply(function(isA, isB, isC, isD, isE, isAB, isAC, isAD, isAE, isBC, isBD, isBE, isCD, isCE, isDE) {
@@ -289,7 +317,9 @@ p2 <- predict(m, testing[,nonNAIndeciesAndDoablePredictors])
 
 ```
 
-
+```{r modelInfo}
+m
+```
 
 ## References
 
@@ -306,3 +336,7 @@ p2 <- predict(m, testing[,nonNAIndeciesAndDoablePredictors])
 ### The asssignment's web page: https://www.coursera.org/learn/practical-machine-learning/supplement/PvInj/course-project-instructions-read-first
 
 
+### The List of Caret Models
+https://topepo.github.io/caret/available-models.html
+
+### Applied Predictive Modeling, (c) 2013 By Max Kuhn and Kjell Johnson
