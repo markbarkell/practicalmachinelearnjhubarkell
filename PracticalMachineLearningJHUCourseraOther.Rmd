@@ -249,7 +249,7 @@ testing <- putPredict(testing)
 m <- caret::train(
   y = training[,classeIndex], 
   x = training[,nonNAIndeciesAndDoablePredictors],
-  method = "fda",
+  method = "treebag",
   trControl = ctrl,
   preProcess = c("center", "scale", "pca")
                   )
